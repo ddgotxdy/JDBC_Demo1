@@ -8,6 +8,11 @@ import java.util.Scanner;
 public class Client extends Thread {
     private static int port = 6060;
     private static Scanner scanner = new Scanner(System.in);
+    private static DataInputStream in = null;
+    private static DataOutputStream out = null;
+    private static Socket client = null;
+    private static String name = null;
+    private static String password = null;
     // 访问的ip地址
 //    private static String Servername = "182.92.216.59";
 
@@ -17,7 +22,6 @@ public class Client extends Thread {
      */
 
     public static void main(String args[]) {
-        Socket client = null;
         try {
 //            本地测试
             InetAddress inetAddress = InetAddress.getLocalHost();
@@ -43,15 +47,16 @@ public class Client extends Thread {
             System.out.println("=======================图书管理系统====================\n" +
                     "1：");
 
-            DataInputStream in = new DataInputStream(client.getInputStream());
-            DataOutputStream out = new DataOutputStream(client.getOutputStream());
+            in = new DataInputStream(client.getInputStream());
+            out = new DataOutputStream(client.getOutputStream());
 
             int id = 0;
             do {
-                id = in.readInt();
+                id = scanner.nextInt();
+                scanner.nextLine();
                 switch (id) {
                     case 1:
-
+                        register();
                         break;
                     case 2:
 
@@ -63,12 +68,39 @@ public class Client extends Thread {
 
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if(client != null) {
+                try {
+                    client.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
-    public static void register() {
-
+    public static void register() throws IOException {
+        out.writeUTF("register");
+        System.out.print("请输入账号：");
+        name = scanner.nextLine();
+        System.out.print("请输入密码：");
+        password = scanner.nextLine();
+        System.out.println("name" + name);
+        System.out.println("password" + password);
+        out.writeUTF(name);
+        out.writeUTF(password);
+        int res = in.readInt();
+        switch (res) {
+            case 0:
+                System.out.println("注册成功");
+                break;
+            case 1:
+                System.out.println("注册失败 - 用户名存在");
+                break;
+            case 2:
+                System.out.println("注册失败");
+                break;
+        }
     }
-
 
 }
