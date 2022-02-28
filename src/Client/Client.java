@@ -44,8 +44,11 @@ public class Client extends Thread {
 
     public static void interaction(Socket client) {
         try {
-            System.out.println("=======================图书管理系统====================\n" +
-                    "1：");
+            System.out.println("=======================图书管理系统====================\n\n" +
+                               "=================输入数字进入对应功能=====================\n" +
+                    "1: register 注册用户" +
+                    "2: login    登录账号" +
+                    "3: ");
 
             in = new DataInputStream(client.getInputStream());
             out = new DataOutputStream(client.getOutputStream());
@@ -85,8 +88,7 @@ public class Client extends Thread {
         name = scanner.nextLine();
         System.out.print("请输入密码：");
         password = scanner.nextLine();
-        System.out.println("name" + name);
-        System.out.println("password" + password);
+
         out.writeUTF(name);
         out.writeUTF(password);
         int res = in.readInt();
